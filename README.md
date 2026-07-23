@@ -1,6 +1,6 @@
 # vue-colorful
 
-Vue 3 port of [`react-colorful`](https://github.com/omgovich/react-colorful), maintained in the RareFormLabs fork.
+Vue 3 port of [`react-colorful`](https://github.com/omgovich/react-colorful), maintained by RareFormLabs.
 
 It keeps the original library's strengths:
 
@@ -12,7 +12,7 @@ It keeps the original library's strengths:
 
 ## Demo
 
-- GitHub Pages: <https://rareformlabs.github.io/react-colorful/>
+- GitHub Pages: <https://rareformlabs.github.io/vue-colorful/>
 - Upstream project: <https://github.com/omgovich/react-colorful>
 
 ## Install
@@ -115,5 +115,5 @@ npm test
 
 ## Notes
 
-- The repository remains a GitHub fork of `react-colorful`, but the public API is now Vue-first.
+- The repository is named `vue-colorful`, while preserving the original lineage from `react-colorful`.
 - The default demo deploys through GitHub Actions to GitHub Pages.

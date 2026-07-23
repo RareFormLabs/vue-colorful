@@ -1,245 +1,200 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import {
-  HexAlphaColorPicker,
-  HexColorInput,
-  HexColorPicker,
-  HslaStringColorPicker,
-  RgbaStringColorPicker,
-} from "../src";
+import { computed, onMounted, ref, watch } from "vue";
+import { RgbaColorPicker, type RgbaColor } from "../src";
 
-const hex = ref("#7f5af0");
-const alphaHex = ref("#7f5af0cc");
-const rgba = ref("rgba(255, 125, 90, 0.65)");
-const hsla = ref("hsla(184, 77%, 45%, 0.7)");
+const swatches: RgbaColor[] = [
+  { r: 209, g: 97, b: 28, a: 1 },
+  { r: 34, g: 91, b: 161, a: 1 },
+  { r: 225, g: 17, b: 135, a: 0.7625 },
+  { r: 21, g: 139, b: 59, a: 1 },
+  { r: 189, g: 60, b: 60, a: 1 },
+];
 
-const swatches = computed(() => [
-  { label: "Base", value: hex.value },
-  { label: "Tint", value: "#f1eefc" },
-  { label: "Accent", value: rgba.value },
-  { label: "Mist", value: hsla.value },
-]);
+const color = ref<RgbaColor>(swatches[Math.floor(Math.random() * swatches.length)]);
+const stars = ref(1300);
+
+const textColor = computed(() => {
+  const brightness = (color.value.r * 299 + color.value.g * 587 + color.value.b * 114) / 1000;
+  return brightness > 128 || color.value.a < 0.5 ? "#000" : "#fff";
+});
+
+const colorString = computed(
+  () => `rgba(${color.value.r}, ${color.value.g}, ${color.value.b}, ${color.value.a})`
+);
+
+watch(
+  colorString,
+  (value) => {
+    document.body.style.backgroundColor = value;
+  },
+  { immediate: true }
+);
+
+onMounted(async () => {
+  try {
+    const response = await fetch("https://api.github.com/repos/RareFormLabs/vue-colorful");
+    const data = await response.json();
+    if (typeof data?.stargazers_count === "number") {
+      stars.value = data.stargazers_count;
+    }
+  } catch {
+    // Keep the fallback count if the API is unavailable.
+  }
+});
 </script>
 
 <template>
-  <main class="page">
-    <section class="hero">
-      <p class="eyebrow">Vue 3 port of react-colorful</p>
-      <h1>vue-colorful</h1>
-      <p class="lede">
-        Tiny, keyboard-friendly color pickers for Vue apps, now living comfortably in the
-        RareFormLabs universe.
-      </p>
-      <div class="hero-actions">
-        <a href="https://github.com/RareFormLabs/react-colorful" target="_blank" rel="noreferrer">
-          View source
-        </a>
-        <a href="https://github.com/omgovich/react-colorful" target="_blank" rel="noreferrer">
-          Upstream fork
-        </a>
+  <div>
+    <header class="header" :style="{ color: textColor }">
+      <div class="header-demo">
+        <RgbaColorPicker v-model:color="color" class="header-demo-picker" />
       </div>
-    </section>
+      <div class="header-content">
+        <h1 class="header-title">Vue Colorful 🎨</h1>
+        <h2 class="header-description">A tiny color picker component for Vue 3 apps</h2>
 
-    <section class="grid">
-      <article class="card spotlight">
-        <header>
-          <span>Hex picker</span>
-          <strong>{{ hex }}</strong>
-        </header>
-        <HexColorPicker v-model:color="hex" />
-        <HexColorInput v-model:color="hex" prefixed class="input" />
-      </article>
-
-      <article class="card">
-        <header>
-          <span>Alpha hex</span>
-          <strong>{{ alphaHex }}</strong>
-        </header>
-        <HexAlphaColorPicker v-model:color="alphaHex" />
-        <HexColorInput v-model:color="alphaHex" prefixed alpha class="input" />
-      </article>
-
-      <article class="card">
-        <header>
-          <span>RGBA string</span>
-          <strong>{{ rgba }}</strong>
-        </header>
-        <RgbaStringColorPicker v-model:color="rgba" />
-      </article>
-
-      <article class="card">
-        <header>
-          <span>HSLA string</span>
-          <strong>{{ hsla }}</strong>
-        </header>
-        <HslaStringColorPicker v-model:color="hsla" />
-      </article>
-    </section>
-
-    <section class="palette">
-      <div v-for="swatch in swatches" :key="swatch.label" class="swatch">
-        <div class="chip" :style="{ background: swatch.value }"></div>
-        <div>
-          <span>{{ swatch.label }}</span>
-          <strong>{{ swatch.value }}</strong>
-        </div>
+        <nav class="links">
+          <a
+            class="link"
+            href="https://github.com/RareFormLabs/vue-colorful"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+            <span class="link-separator"></span>
+            <svg class="star-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12.9 2.6l2.3 5c.1.3.4.5.7.6l5.2.8c.9 0 1.2 1 .6 1.6l-3.8 3.9c-.2.2-.3.6-.3.9l.9 5.4c.1.8-.7 1.5-1.4 1.1l-4.7-2.6c-.3-.2-.6-.2-.9 0l-4.7 2.6c-.7.4-1.6-.2-1.4-1.1l.9-5.4c.1-.3-.1-.7-.3-.9l-3.8-3.9C1.7 10 2 9 2.8 8.9L8 8.1c.3 0 .6-.3.7-.6l2.3-5c.5-.7 1.5-.7 1.9.1z"
+              />
+            </svg>
+            {{ stars }}
+          </a>
+          <a
+            class="link"
+            href="https://www.npmjs.com/package/@rareformlabs/vue-colorful"
+            target="_blank"
+            rel="noreferrer"
+          >
+            NPM
+          </a>
+        </nav>
       </div>
-    </section>
-  </main>
+    </header>
+  </div>
 </template>
 
 <style scoped>
-:global(body) {
-  margin: 0;
-  font-family: "IBM Plex Sans", "Avenir Next", sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(127, 90, 240, 0.18), transparent 35%),
-    radial-gradient(circle at top right, rgba(22, 163, 74, 0.14), transparent 28%),
-    linear-gradient(180deg, #fffaf2 0%, #fff 45%, #f5f7fb 100%);
-  color: #18212f;
-}
-
 :global(*) {
   box-sizing: border-box;
-}
-
-.page {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 48px 20px 64px;
-}
-
-.hero {
-  margin-bottom: 32px;
-}
-
-.eyebrow {
-  margin: 0 0 8px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  color: #6d5c9a;
-}
-
-h1 {
   margin: 0;
-  font-size: clamp(3rem, 8vw, 5.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.05em;
-}
-
-.lede {
-  max-width: 680px;
-  font-size: 1.08rem;
-  line-height: 1.6;
-  color: #475569;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.hero-actions a {
-  text-decoration: none;
-  color: #18212f;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(24, 33, 47, 0.08);
-  border-radius: 999px;
-  padding: 10px 14px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
-}
-
-.card {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(24, 33, 47, 0.08);
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: 0 22px 48px rgba(24, 33, 47, 0.08);
-}
-
-.spotlight {
-  transform: rotate(-1deg);
-}
-
-.card header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: baseline;
-  margin-bottom: 16px;
-  font-size: 0.92rem;
-}
-
-.card strong {
-  display: block;
-  max-width: 150px;
-  text-align: right;
-  font-size: 0.82rem;
-  color: #475569;
-}
-
-.input {
-  margin-top: 14px;
-  width: 100%;
-  border: 1px solid rgba(24, 33, 47, 0.14);
-  border-radius: 14px;
-  padding: 12px 14px;
+  padding: 0;
+  border: none;
   font: inherit;
+  outline: none;
 }
 
-.palette {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
-  margin-top: 24px;
+:global(body) {
+  color: #222;
+  background-color: #fff;
+  font: normal 20px/1.4 "Recursive", Arial, Helvetica, sans-serif;
 }
 
-.swatch {
+.header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.76);
-  border: 1px solid rgba(24, 33, 47, 0.08);
-  border-radius: 18px;
-  padding: 14px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 120px 32px;
+  transition: color 0.15s;
 }
 
-.chip {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  box-shadow: inset 0 0 0 1px rgba(24, 33, 47, 0.08);
+.header-demo {
+  position: relative;
+  width: 200px;
+  flex-shrink: 0;
 }
 
-.swatch span,
-.swatch strong {
-  display: block;
+.header-demo-picker {
+  width: 100%;
+  border-radius: 9px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
-.swatch span {
-  font-size: 0.8rem;
-  color: #64748b;
+.header-content {
+  flex-grow: 1;
+  margin-left: 40px;
 }
 
-.swatch strong {
-  font-size: 0.92rem;
+.header-title {
+  margin-bottom: 16px;
+  font-size: 44px;
+  line-height: 1;
 }
 
-@media (max-width: 720px) {
-  .page {
-    padding-top: 32px;
+.header-description {
+  max-width: 16em;
+}
+
+.links {
+  display: flex;
+  margin-top: 32px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  margin-right: 16px;
+  color: inherit;
+  text-decoration: none;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  padding: 0 16px;
+  opacity: 0.8;
+}
+
+.link:last-child {
+  margin-right: 0;
+}
+
+.link:hover {
+  opacity: 1;
+}
+
+.star-icon {
+  margin-right: 4px;
+}
+
+.link-separator {
+  width: 2px;
+  height: 100%;
+  margin: 0 12px;
+  background: currentColor;
+}
+
+@media (max-width: 767px) {
+  .header {
+    max-width: 360px;
+    padding: 40px 20px;
+    flex-direction: column;
   }
 
-  .card strong {
-    max-width: 120px;
+  .header-content {
+    text-align: center;
+    margin-top: 40px;
+    margin-left: 0;
+  }
+
+  .header-title {
+    font-size: 32px;
+  }
+
+  .header-description {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 </style>

@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RareFormLabs/react-colorful.git"
+    "url": "git+https://github.com/RareFormLabs/vue-colorful.git"
   },
   "keywords": [
     "vue",
@@ -49,9 +49,9 @@
   "author": "RareFormLabs",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/RareFormLabs/react-colorful/issues"
+    "url": "https://github.com/RareFormLabs/vue-colorful/issues"
   },
-  "homepage": "https://rareformlabs.github.io/react-colorful/",
+  "homepage": "https://rareformlabs.github.io/vue-colorful/",
   "peerDependencies": {
     "vue": "^3.5.0"
   },
