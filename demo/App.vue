@@ -11,7 +11,7 @@ const swatches: RgbaColor[] = [
 ];
 
 const color = ref<RgbaColor>(swatches[Math.floor(Math.random() * swatches.length)]);
-const stars = ref(1300);
+const stars = ref(0);
 
 const textColor = computed(() => {
   const brightness = (color.value.r * 299 + color.value.g * 587 + color.value.b * 114) / 1000;
