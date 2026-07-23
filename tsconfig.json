@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
     "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "jsx": "react",
-    "jsxFactory": "React.createElement",
-    "moduleResolution": "node",
-    "declaration": true,
-    "strict": true
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "types": ["node", "vite/client", "vitest/globals"]
   },
-  "include": ["./src/**/*", "./test/**/*", "./demo/src/**/*"]
+  "include": ["demo/**/*.ts", "demo/**/*.vue", "src/**/*.ts", "src/**/*.d.ts", "tests/**/*.ts", "vite.config.ts", "vitest.config.ts"]
 }

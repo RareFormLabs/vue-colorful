@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface RgbColor {
   r: number;
   g: number;
@@ -31,33 +29,15 @@ export interface HsvaColor extends HsvColor {
 }
 
 export type ObjectColor = RgbColor | HslColor | HsvColor | RgbaColor | HslaColor | HsvaColor;
-
 export type AnyColor = string | ObjectColor;
 
 export interface ColorModel<T extends AnyColor> {
   defaultColor: T;
-  toHsva: (defaultColor: T) => HsvaColor;
+  toHsva: (color: T) => HsvaColor;
   fromHsva: (hsva: HsvaColor) => T;
   equal: (first: T, second: T) => boolean;
 }
 
-type ColorPickerHTMLAttributes = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "color" | "onChange" | "onChangeCapture"
->;
-
-export interface ColorPickerBaseProps<T extends AnyColor> extends ColorPickerHTMLAttributes {
-  color: T;
-  onChange: (newColor: T) => void;
-  onChangeEnd?: (newColor: T) => void;
-}
-
-type ColorInputHTMLAttributes = Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  "onChange" | "value"
->;
-
-export interface ColorInputBaseProps extends ColorInputHTMLAttributes {
+export interface ColorInputBaseProps {
   color?: string;
-  onChange?: (newColor: string) => void;
 }
