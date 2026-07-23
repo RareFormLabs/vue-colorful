@@ -1,6 +1,6 @@
 {
   "name": "@rareformlabs/vue-colorful",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A tiny color picker component library for Vue 3 apps. Fast, accessible, dependency-free, and based on the react-colorful fork.",
   "type": "module",
   "main": "./dist/index.cjs",
